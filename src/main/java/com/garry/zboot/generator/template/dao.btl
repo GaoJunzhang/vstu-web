@@ -1,0 +1,14 @@
+package ${entity.daoPackage};
+
+import com.garry.zboot.base.ZbootBaseDao;
+import ${entity.entityPackage}.${entity.className};
+
+import java.util.List;
+
+/**
+ * ${entity.description}数据处理层
+ * @author ${entity.author}
+ */
+public interface ${entity.className}Dao extends ZbootBaseDao<${entity.className},${entity.primaryKeyType}> {
+
+}

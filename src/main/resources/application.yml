@@ -1,0 +1,166 @@
+# 配置文件加密key
+jasypt:
+  encryptor:
+    password: zboot
+
+server:
+  port: 8888
+  servlet:
+    context-path: /
+  tomcat:
+    uri-encoding: UTF-8
+    max-threads: 1000
+    min-spare-threads: 30
+
+spring:
+  # 数据源
+  datasource:
+    url: jdbc:mysql://47.100.122.108:3306/v-meet?useUnicode=true&characterEncoding=utf-8&useSSL=false
+    username: root
+    # Jasypt加密 可到common-utils中找到JasyptUtil加解密工具类生成加密结果 格式为ENC(加密结果) 以下解密结果为123456
+    password: ENC(kF21ndCjR/PpKHQCXZTdpw==)
+    type: com.alibaba.druid.pool.DruidDataSource
+    driverClassName: com.mysql.jdbc.Driver
+    # Druid StatViewServlet配置
+    druid:
+      stat-view-servlet:
+        # 默认true 内置监控页面首页/druid/index.html
+        enabled: true
+        url-pattern: /druid/*
+        # 允许清空统计数据
+        reset-enable: true
+        login-username: admin
+        login-password: ENC(kF21ndCjR/PpKHQCXZTdpw==)
+        # IP白名单 多个逗号分隔,没有配置或者为空，则运行所有的ip
+        allow:
+        # IP黑名单
+        deny:
+  jpa:
+    show-sql: true
+    # 自动生成表结构
+    generate-ddl: true
+    hibernate:
+      ddl-auto: none
+  # Redis
+  redis:
+    host: 47.100.122.108
+    password: zgj1234
+    # 数据库索引 默认0
+    database: 0
+    port: 6379
+    # 超时时间 Duration类型 3秒
+    timeout: 3S
+  # Elasticsearch
+  data:
+    elasticsearch:
+      cluster-nodes: 47.100.122.108:9300
+      cluster-name: JunEs
+      repositories:
+        enabled: true
+    mongodb:
+      uri: mongodb://47.100.122.108:27017/gimgs
+  # 定时任务
+  quartz:
+    # 任务信息存储至数据库
+    job-store-type: jdbc
+    properties:
+      org:
+        quartz:
+          jobStore:
+            misfireThreshold: 100
+  # 文件大小上传配置
+  servlet:
+    multipart:
+      max-file-size: 5MB
+      max-request-size: 5MB
+  jackson:
+    time-zone: GMT+8
+
+zboot:
+  # 全局限流
+  rateLimit:
+    enable: true
+    # 每1秒内
+    timeout: 1000
+    # 总限制100个请求
+    limit: 100
+  # token交互方式
+  token:
+    # 默认redis 设置为true后，token将存入redis，并具有单点登录功能 设为false将使用JWT交互
+    redis: true
+    # token中存储用户权限数据 设为true开启后可避免每次请求再获取用户权限，但有可能导致编辑权限菜单后无法读取到最新权限数据（需用户重新登录）
+    storePerms: true
+  # token过期时间（分钟）
+  tokenExpireTime: 60
+  # 用户选择保存登录状态对应token过期时间（天）
+  saveLoginTime: 7
+  # 限制用户登陆错误次数（次）
+  loginTimeLimit: 10
+  # 错误超过次数后多少分钟后才能继续登录（分钟）
+  loginAfterTime: 10
+  # ES
+  elasticsearch:
+    nodeClient: 47.100.122.108:9200
+  # 日志记录方式 true使用Elasticsearch记录 false记录至数据库中
+  logRecord:
+    es: true
+  # 七牛云配置
+  qiniu:
+    accessKey: 你的accessKey
+    secretKey: 你的secretKey
+    bucket: 你的空间名
+    domain: 你的测试域名，如http://p77xsahe9.bkt.clouddn.com
+    # 存储区域 -1自动判断 0华东 1华北 2华南 3北美 4东南亚
+    zone: -1
+  # mob api配置 mob官网注册申请即可
+  mob:
+    appKey: 2ba57c6d34006
+
+# Actuator
+management:
+  health:
+    # 暂未用到ES 关闭其健康检查
+    elasticsearch:
+      enabled: false
+
+# 忽略鉴权url
+ignored:
+  urls:
+  - /zboot/dictData/getByType/**
+  - /zboot/user/regist
+  - /zboot/common/**
+  - /druid/**
+  - /swagger-ui.html
+  - /swagger-resources/**
+  - /swagger/**
+  - /**/v2/api-docs
+  - /**/*.js
+  - /**/*.css
+  - /**/*.png
+  - /**/*.ico
+  - /test/**
+  - /zboot/blog/es/article/getAllByPage
+
+# Swagger界面内容配置
+swagger:
+  title: ZBoot API接口文档
+  description: ZBoot Api Documentation
+  version: 0.0.1
+  termsOfServiceUrl: http://bluablua.com/blog
+  contact:
+    name: gaojunzhang
+    url: http://bluablua.com/
+    email: 1228671674@qq.com
+
+# Mybatis-plus
+mybatis-plus:
+  mapper-locations: classpath*:mapper/*.xml
+
+# 日志
+logging:
+  file: zboot-logs/zboot.log
+#阿里短信
+ali:
+  accessKey: LTAI7Thw4v0lK0IS
+  accessSecret: RBHomcYGmQH3CtTsBUcdRfgbbzle0l
+  defaultBucket: vstu
