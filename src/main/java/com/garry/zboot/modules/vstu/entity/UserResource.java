@@ -69,12 +69,12 @@ public class UserResource  implements java.io.Serializable {
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "t_user_id", nullable = false)
-	public User getTuser() {
+	public User getUser() {
 		return this.user;
 	}
 
-	public void setTuser(User tuser) {
-		this.user = tuser;
+	public void setUser(User user) {
+		this.user = user;
 	}
 
 	@ManyToOne(fetch = FetchType.LAZY)

@@ -43,8 +43,8 @@ public class IDeviceServiceImpl extends ServiceImpl<DeviceMapper, Device> implem
         if (device.getEnable()!=null){
             queryWrapper.eq("is_delete",device.getEnable());
         }
-        if (device.getDevicetype() !=null){
-            queryWrapper.eq("device_type_id",device.getDevicetype().getId());
+        if (device.getDeviceTypeId() !=null){
+            queryWrapper.eq("device_type_id",device.getDeviceTypeId());
         }
         if (StrUtil.isNotBlank(searchVo.getStartDate())){
             queryWrapper.gt("create_time",searchVo.getStartDate());
