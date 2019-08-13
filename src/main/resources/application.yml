@@ -15,10 +15,10 @@ server:
 spring:
   # 数据源
   datasource:
-    url: jdbc:mysql://47.100.122.108:3306/v-meet?useUnicode=true&characterEncoding=utf-8&useSSL=false
+    url: jdbc:mysql://?useUnicode=true&characterEncoding=utf-8&useSSL=false
     username: root
     # Jasypt加密 可到common-utils中找到JasyptUtil加解密工具类生成加密结果 格式为ENC(加密结果) 以下解密结果为123456
-    password: ENC(kF21ndCjR/PpKHQCXZTdpw==)
+    password:
     type: com.alibaba.druid.pool.DruidDataSource
     driverClassName: com.mysql.jdbc.Driver
     # Druid StatViewServlet配置
@@ -29,8 +29,8 @@ spring:
         url-pattern: /druid/*
         # 允许清空统计数据
         reset-enable: true
-        login-username: admin
-        login-password: ENC(kF21ndCjR/PpKHQCXZTdpw==)
+        login-username:
+        login-password:
         # IP白名单 多个逗号分隔,没有配置或者为空，则运行所有的ip
         allow:
         # IP黑名单
@@ -43,8 +43,8 @@ spring:
       ddl-auto: none
   # Redis
   redis:
-    host: 47.100.122.108
-    password: zgj1234
+    host:
+    password:
     # 数据库索引 默认0
     database: 0
     port: 6379
@@ -53,12 +53,12 @@ spring:
   # Elasticsearch
   data:
     elasticsearch:
-      cluster-nodes: 47.100.122.108:9300
+      cluster-nodes:
       cluster-name: JunEs
       repositories:
         enabled: true
     mongodb:
-      uri: mongodb://47.100.122.108:27017/gimgs
+      uri: mongodb:///gimgs
   # 定时任务
   quartz:
     # 任务信息存储至数据库
@@ -100,7 +100,7 @@ zboot:
   loginAfterTime: 10
   # ES
   elasticsearch:
-    nodeClient: 47.100.122.108:9200
+    nodeClient:
   # 日志记录方式 true使用Elasticsearch记录 false记录至数据库中
   logRecord:
     es: true
@@ -161,6 +161,6 @@ logging:
   file: zboot-logs/zboot.log
 #阿里短信
 ali:
-  accessKey: LTAI7Thw4v0lK0IS
-  accessSecret: RBHomcYGmQH3CtTsBUcdRfgbbzle0l
-  defaultBucket: vstu
+  accessKey:
+  accessSecret:
+  defaultBucket:
