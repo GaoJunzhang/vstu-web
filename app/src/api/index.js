@@ -427,6 +427,21 @@ export const addDevice = (params) => {
 export const delDeviceIds = (id) => {
     return deleteRequest(`/device/delByIds/${id}`);
 }
+/**
+ * resource
+ */
+export const resourceData = (params) => {
+    return getRequest('/resource/getByPage', params)
+}
+export const resourceById = (id) => {
+    return getRequest(`/resource/get/${id}`)
+}
+export const addresource = (params) => {
+    return postRequest('/resource/saveOrUpdate', params);
+}
+export const delResourceIds = (id) => {
+    return deleteRequest(`/resource/delByIds/${id}`);
+}
 
 // base64上传
 export const base64Upload = (params) => {

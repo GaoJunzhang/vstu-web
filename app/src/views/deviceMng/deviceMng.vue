@@ -247,6 +247,22 @@
                                         }
                                     },
                                     "删除"
+                                ),
+                                h(
+                                    "Button",
+                                    {
+                                        props: {
+                                            type: "error",
+                                            size: "small",
+                                            icon: "md-trash"
+                                        },
+                                        on: {
+                                            click: () => {
+                                                // this.remove(params.row);
+                                            }
+                                        }
+                                    },
+                                    "分配设备"
                                 )
                             ]);
                         }
@@ -282,6 +298,7 @@
             },
             getDataList() {
                 this.loading = true;
+                console.log(this.searchForm)
                 deviceData(this.searchForm).then(res => {
                     this.loading = false;
                     if (res.success == true) {
@@ -313,7 +330,6 @@
                                 console.log(res)
                                 if (res.success == true) {
 
-                                    this.submitLoading = false;
                                     this.$Message.success("操作成功");
                                     this.getDataList();
                                     this.modalVisible = false;
@@ -336,6 +352,8 @@
                             this.submitLoading = false;
                         }
                     }
+                    this.submitLoading = false;
+
                 });
             },
             add() {
