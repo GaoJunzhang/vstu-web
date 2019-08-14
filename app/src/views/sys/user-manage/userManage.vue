@@ -100,8 +100,10 @@
                 <DropdownItem name="exportData">导出所选数据</DropdownItem>
                 <DropdownItem name="exportAll">导出全部数据</DropdownItem>
                 <DropdownItem name="importData">导入数据</DropdownItem>
+                <DropdownItem name="setUserResource">分配资源</DropdownItem>
               </DropdownMenu>
             </Dropdown>
+            <resource-choose text="选择资源" @on-change="handleSelectFile" ref="oss"></resource-choose>
             <circleLoading v-if="operationLoading"/>
           </Row>
           <Row>
@@ -216,6 +218,7 @@ import {
   deleteUser,
   getAllUserData
 } from "@/api/index";
+import resourceChoose from "@/views/my-components/vstu/resource-choose";
 import expandRow from "./expand.vue";
 import departmentChoose from "../../my-components/xboot/department-choose";
 import departmentTreeChoose from "../../my-components/xboot/department-tree-choose";
@@ -228,7 +231,8 @@ export default {
     expandRow,
     departmentChoose,
     departmentTreeChoose,
-    uploadPicInput
+    uploadPicInput,
+    resourceChoose
   },
   data() {
     const validatePassword = (rule, value, callback) => {
@@ -258,6 +262,7 @@ export default {
       selectList: [],
       dataDep: [],
       searchKey: "",
+      selectResource:[],
       searchForm: {
         username: "",
         departmentId: "",
@@ -682,10 +687,12 @@ export default {
       } else if (name == "exportAll") {
         this.modalExportAll = true;
       } else if (name == "importData") {
-        this.$Modal.info({
-          title: "请获取完整版",
-          content: "支付链接: http://xpay.exrick.cn/pay?xboot"
-        });
+       this.$Message.info("待开发")
+      }else if (name == "setUserResource"){
+        if (this.selectCount <= 0) {
+          this.$Message.warning("请选择您要配置的用户");
+          return;
+        }
       }
     },
     exportAll() {
@@ -864,6 +871,9 @@ export default {
           });
         }
       });
+    },
+    handleSelectFile(v){
+      this.selectResource = v
     }
   },
   mounted() {

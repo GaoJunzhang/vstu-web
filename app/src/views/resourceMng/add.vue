@@ -23,23 +23,23 @@
                     </FormItem>
                     <FormItem label="预览图" prop="proImg">
                         <!--<Input v-model="form.proImg" style="width: 400px"/>-->
-                        <resource-choose text="选择预览图" @on-change="handleSelectProImg"
-                                         ref="resource"></resource-choose>
+                        <oss-choose text="选择预览图" @on-change="handleSelectProImg"
+                                         ref="oss"></oss-choose>
                         <div class="upload-list" v-for="item in selectProImg">
                             <img :src="item.fileName" onerror="this.src='https://s2.ax1x.com/2019/07/19/ZviZM4.jpg'">
                         </div>
                     </FormItem>
                     <FormItem label="预览视频" prop="proVideo">
                         <!--<Input v-model="form.proVideo" style="width: 400px"/>-->
-                        <resource-choose text="选择预览视频" @on-change="handleSelectProVideo"
-                                         ref="resource"></resource-choose>
+                        <oss-choose text="选择预览视频" @on-change="handleSelectProVideo"
+                                         ref="oss"></oss-choose>
                         <div class="upload-list" v-for="item in selectProVideo">
                             <img :src="item.fileName" onerror="this.src='https://s2.ax1x.com/2019/07/19/ZviZM4.jpg'">
                         </div>
                     </FormItem>
                     <FormItem label="资源文件" prop="rul">
                         <!--<Input v-model="form.url" style="width: 400px"/>-->
-                        <resource-choose text="选择文件" @on-change="handleSelectFile" ref="resource"></resource-choose>
+                        <oss-choose text="选择文件" @on-change="handleSelectFile" ref="oss"></oss-choose>
                         <div class="upload-list" v-for="item in selectFile">
                             <img :src="item.fileName" onerror="this.src='https://s2.ax1x.com/2019/07/19/ZviZM4.jpg'">
                         </div>
@@ -62,13 +62,13 @@
 </template>
 
 <script>
-    import resourceChoose from "@/views/my-components/vstu/resource-choose";
+    import ossChoose from "@/views/my-components/vstu/oss-choose";
     import {addresource} from "@/api/index"
 
     export default {
         name: "add",
         components: {
-            resourceChoose
+            ossChoose
         },
         data() {
             return {

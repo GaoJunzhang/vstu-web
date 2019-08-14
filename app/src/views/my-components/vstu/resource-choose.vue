@@ -19,7 +19,7 @@
                 </p>
             </Panel>
         </Collapse>
-        <Drawer title="选择云盘文件" closable v-model="resourceModalVisible" width="800" draggable>
+        <Drawer title="选择资源" closable v-model="resourceModalVisible" width="800" draggable>
             <Form
                     ref="searchResourceForm"
                     :model="searchResourceForm"
@@ -27,33 +27,33 @@
                     :label-width="65"
                     class="search-form"
             >
-                <!--<Form-item label="文件名称" prop="fileName">
+                <Form-item label="资源名称" prop="fileName">
                     <Input
                             type="text"
-                            v-model="searchResourceForm.fileName"
+                            v-model="searchResourceForm.name"
                             clearable
-                            placeholder="请输入文件名称"
+                            placeholder="请输资源名称"
                             style="width: 220px"
                     />
-                </Form-item>-->
-                <Form-item label="类型" prop="department">
-                    <Select
-                            v-model="searchResourceForm.fileType"
-                            placeholder="请选择"
-                            clearable
-                            style="width: 200px"
-                    >
-                        <Option value="img/">图片</Option>
-                        <Option value="video/">视频</Option>
-                        <Option value="apk/">应用</Option>
-                    </Select>
                 </Form-item>
-                 <Form-item style="margin-left:-35px;" class="br">
-                     <Button @click="handleSearchResource" type="primary" icon="ios-search">搜索</Button>
-                     <Button @click="handleResetResource">重置</Button>
-                 </Form-item>
+                <!--                <Form-item label="类型" prop="department">
+                                    <Select
+                                            v-model="searchResourceForm.fileType"
+                                            placeholder="请选择"
+                                            clearable
+                                            style="width: 200px"
+                                    >
+                                        <Option value="img/">图片</Option>
+                                        <Option value="video/">视频</Option>
+                                        <Option value="apk/">应用</Option>
+                                    </Select>
+                                </Form-item>-->
+                <Form-item style="margin-left:-35px;" class="br">
+                    <Button @click="handleSearchResource" type="primary" icon="ios-search">搜索</Button>
+                    <Button @click="handleResetResource">重置</Button>
+                </Form-item>
             </Form>
-            <Table :loading="ossLoading" border :columns="userColumns" :data="ossData" :height="height"
+            <Table :loading="ossLoading" border :columns="resourceColumns" :data="data" :height="height"
                    ref="userTable"></Table>
             <Row type="flex" justify="end" class="code-row-bg page" style="margin: 10px 0;">
                 <Page
@@ -93,8 +93,8 @@
 </template>
 
 <script>
-    import {getUserListData, pageOssData} from "@/api/index";
-    import '../../../locale/global'
+    import {resourceData} from "@/api/index"
+    import '@/locale/global'
 
     export default {
         name: "resourceChoose",
@@ -119,57 +119,51 @@
                 visible: false,
                 showvideo: false,
                 searchResourceForm: {
-                    fileType: '',
-                    fileName: "",
-                    type: "",
-                    status: "",
-                    pageNumber: 1, // 当前页数
-                    pageSize: 10, // 页面大小
-                    sort: "createTime", // 默认排序字段
-                    order: "desc" // 默认排序方式
+                    name: "",
+                    title: "",
+                    content: "",
+                    pageNumber: 1,
+                    pageSize: 10,
+                    sort: "create_time",
+                    order: "desc",
+                    startDate: "",
+                    endDate: ""
                 },
-                userColumns: [
+                resourceColumns: [
                     // 表头
                     {
                         type: "index",
-                        width: 60,
+                        width: 50,
                         align: "center"
                     },
                     {
-                        title: "缩略图",
-                        key: "key",
-                        width: 100,
+                        title: "资源名称",
+                        key: "name",
+                        width: 120,
+                        sortable: true
+                    },
+                    {
+                        title: "标题",
+                        width: 120,
+                        key: "title",
+                        sortable: true
+                    },
+                    {
+                        title: "预览图",
+                        key: "proImg",
+                        width: 130,
+                        sortable: true,
                         render: (h, params) => {
-                            var fileTmp = params.row.key;
-                            var fileType = fileTmp.substr(fileTmp.lastIndexOf(".")).toLowerCase()
-                            let flage = 0;
-                            let videoUrl = ''
-                            if (global.IMGSTR_URL.indexOf(fileType) != -1) {
-                                fileTmp = global.OSS_URL + params.row.key
-                                videoUrl = fileTmp
-                                flage = 1
-                            } else if (global.VIDEOSTR_URL.indexOf(fileType) != -1) {
-                                fileTmp = global.VIDEOIMG_URL
-                                videoUrl = global.OSS_URL + params.row.key
-                                flage = 2
-                            } else if (".apk".indexOf(fileType) != -1) {
-                                fileTmp = global.APKIMG_URL
-                                flage = 3
-                            }else if(global.EXESTR_URL.indexOf(fileType) != -1){
-                                fileTmp = global.EXEIMG_URL
-                                flage = 4
-                            } else {
-                                fileTmp = global.FILEIMG_URL
-                                flage = 5
-                            }
+                            console.log("===============")
+                            console.log(params)
                             return h('img', {
                                 attrs: {
-                                    src: fileTmp,
+                                    src: params.row.proImg,
                                     onerror: 'this.src="' + global.ERRORIMG_URL + '"'
                                 },
                                 on: {
                                     click: () => {
-                                        this.previewFile(flage, videoUrl)
+                                        this.previewFile(1, params.row.proImg)
 
                                     }
                                 },
@@ -185,76 +179,40 @@
                         }
                     },
                     {
-                        title: "名称",
-                        key: "key",
-                        width: 200
-                    },
-                    {
-                        title: "文件大小",
-                        key: "size",
-                        width: 100,
+                        title: "预览视频",
+                        key: "proVideo",
+                        width: 120,
+                        sortable: true,
                         render: (h, params) => {
-                            let size = 0;
-                            if (params.row.size >= 1048576) {
-                                size = params.row.size / 1048576
-                                return h('div', [
-                                    h('strong', parseFloat(size).toFixed(2) + "MB")
-                                ])
-                            } else {
-                                size = params.row.size / 1024
-                                return h('div', [
-                                    h('strong', parseFloat(size).toFixed(2) + "KB")
-                                ])
-                            }
+                            return h('img', {
+                                attrs: {
+                                    src: global.VIDEOIMG_URL,
+                                    onerror: 'this.src="' + global.ERRORIMG_URL + '"'
+                                },
+                                on: {
+                                    click: () => {
+                                        this.previewFile(2, params.row.proVideo)
 
+                                    }
+                                },
+                                style: {
+                                    'margin-top': '10px',
+                                    'margin-bottom': '10px',
+                                    'border-radius': '4px',
+                                    width: '80px',
+                                    height: '80px',
+                                    cursor: 'pointer'
+                                }
+                            });
                         }
                     },
                     {
-                        title: "更新时间",
-                        key: "lastModified",
-                        width: 150
+                        title: "资源内容",
+                        key: "content",
+                        width: 130,
+                        sortable: true
                     },
-                    {
-                        title: "操作",
-                        key: "action",
-                        align: "center",
-                        width: 100,
-                        render: (h, params) => {
-                            var fileTmp = params.row.key;
-                            var fileType = fileTmp.substr(fileTmp.lastIndexOf(".")).toLowerCase()
-                            let flage = 0;
-                            let videoUrl = ''
-                            if (global.IMGSTR_URL.indexOf(fileType) != -1) {
-                                videoUrl = global.OSS_URL + params.row.key
-                                flage = 1
-                            } else if (global.VIDEOSTR_URL.indexOf(fileType) != -1) {
-                                videoUrl = global.OSS_URL + params.row.key
-                                flage = 2
-                            }
-                            return h("div", [
-                                h(
-                                    "Button",
-                                    {
-                                        props: {
-                                            type: "primary",
-                                            size: "small",
-                                            icon: "md-arrow-dropright-circle",
-                                            ghost: true
-                                        },
-                                        style: {
-                                            marginRight: "5px"
-                                        },
-                                        on: {
-                                            click: () => {
-                                                this.previewFile(flage, videoUrl);
-                                            }
-                                        }
-                                    },
-                                    "预览"
-                                )
-                            ]);
-                        }
-                    },
+
                     {
                         title: "操作",
                         key: "action",
@@ -272,14 +230,9 @@
                                         },
                                         on: {
                                             click: () => {
-                                                let tmpKey = params.row.key
+                                                let tmpKey = params.row.id
                                                 console.log(params)
-
-                                                if (tmpKey.charAt(tmpKey.length-1)=='/'){
-                                                    this.$Message.error("文件夹不可添加")
-                                                }else {
-                                                    this.chooseSelect(params.row);
-                                                }
+                                                this.chooseSelect(params.row);
                                             }
                                         }
                                     },
@@ -289,10 +242,8 @@
                         }
                     }
                 ],
-                ossData: [],
+                data: [],
                 totalResource: 0,
-                nextMarker: '',//oss下一次分页起点
-                maxKeys: 10,//oss每页页数,
             };
         },
         methods: {
@@ -306,38 +257,31 @@
                     this.showvideo = true
                 }
             },
-/*            handleSelectDep(v) {
-                this.searchResourceForm.departmentId = v;
-            },*/
+            /*            handleSelectDep(v) {
+                            this.searchResourceForm.departmentId = v;
+                        },*/
             changeUserPage(v) {
                 this.searchResourceForm.pageNumber = v;
-                this.getOssDataList();
+                this.getResourceDataList();
             },
             changeUserPageSize(v) {
                 this.searchResourceForm.pageSize = v;
-                this.getOssDataList();
+                this.getResourceDataList();
             },
-            getOssDataList() {
+            getResourceDataList() {
                 this.ossLoading = true;
-                let params = {
-                    nextMarker: this.nextMarker,//oss下一次分页起点
-                    maxKeys: this.maxKeys,//oss每页页数
-                    dir: this.searchResourceForm.fileType,//oss指定目录,
-                    keyPrefix:this.searchResourceForm.fileName
-                };
-                pageOssData(params).then(res => {
-                    if (res.success) {
-                        this.nextMarker = res.result.nextMarker
-                        this.ossData = res.result.summaryList
-                        this.totalResource = res.result.total
+                resourceData(this.searchResourceForm).then(res => {
+                    if (res.success == true) {
+                        this.data = res.result.records;
+                        this.totalResource = res.result.total;
                     }
-                })
+                });
                 this.ossLoading = false;
             },
             handleSearchResource() {
                 this.searchResourceForm.pageNumber = 1;
                 this.searchResourceForm.pageSize = 9;
-                this.getOssDataList();
+                this.getResourceDataList();
             },
             handleResetResource() {
                 this.$refs.searchResourceForm.resetFields();
@@ -346,27 +290,27 @@
                 this.$refs.dep.clearSelect();
                 this.searchResourceForm.departmentId = "";
                 // 重新加载数据
-                this.getOssDataList();
+                this.getResourceDataList();
             },
-/*            setData(v) {
-                this.selectResource = v;
-                this.$emit("on-change", this.selectResource);
-            },*/
+            /*            setData(v) {
+                            this.selectResource = v;
+                            this.$emit("on-change", this.selectResource);
+                        },*/
             chooseSelect(v) {
                 console.log(v)
                 // 去重
                 let that = this;
                 let flag = true;
                 this.selectResource.forEach(e => {
-                    if (v._index == e.id) {
+                    if (v.id == e.id) {
                         that.$Message.warning("已经添加过啦，请勿重复选择");
                         flag = false;
                     }
                 });
                 if (flag) {
                     let u = {
-                        id: v._index,
-                        fileName: global.OSS_URL+v.key
+                        id: v.id,
+                        fileName: v.name
                     };
                     this.selectResource.push(u);
                     this.$emit("on-change", this.selectResource);
@@ -393,7 +337,7 @@
         created() {
             // 计算高度
             this.height = Number(document.documentElement.clientHeight - 230);
-            this.getOssDataList();
+            this.getResourceDataList();
         }
 
     };
