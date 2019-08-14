@@ -4,8 +4,10 @@ import com.garry.zboot.common.annotation.SystemLog;
 import com.garry.zboot.common.enums.LogType;
 import com.garry.zboot.common.utils.IpInfoUtil;
 import com.garry.zboot.common.utils.SecurityUtil;
+import com.garry.zboot.modules.base.model.Log;
 import com.garry.zboot.modules.base.model.User;
 import com.garry.zboot.modules.base.model.elasticsearch.EsLog;
+import com.garry.zboot.modules.base.service.LogService;
 import com.garry.zboot.modules.base.service.elasticsearch.EsLogService;
 import com.google.gson.Gson;
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -14,6 +16,7 @@ import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
@@ -31,17 +34,26 @@ public class SysLogAspect {
     private EsLogService esLogService;
 
     @Autowired
+    private LogService logService;
+
+    @Autowired
     private SecurityUtil securityUtil;
+
+    @Value("${zboot.logRecord.es}")
+    private Boolean esRecord;
+
     /**
      * 这里我们使用注解的形式
      * 当然，我们也可以通过切点表达式直接指定需要拦截的package,需要拦截的class 以及 method
      * 切点表达式:   execution(...)
      */
     @Pointcut("@annotation(com.garry.zboot.common.annotation.SystemLog)")
-    public void logPointCut() {}
+    public void logPointCut() {
+    }
 
     /**
      * 环绕通知 @Around  ， 当然也可以使用 @Before (前置通知)  @After (后置通知)
+     *
      * @param point
      * @return
      * @throws Throwable
@@ -60,6 +72,7 @@ public class SysLogAspect {
 
     /**
      * 保存日志
+     *
      * @param joinPoint
      * @param time
      */
@@ -70,31 +83,60 @@ public class SysLogAspect {
         SystemLog systemLog = method.getAnnotation(SystemLog.class);
         String className = joinPoint.getTarget().getClass().getName();
         String methodName = signature.getName();
-        EsLog esLog = new EsLog();
-        if(systemLog != null){
-            //注解上的描述
-            esLog.setName(systemLog.description());
-        }
-        esLog.setCostTime(time);
-        esLog.setCreateTime(new Date());
-        esLog.setLogType(systemLog.type().toString().equals("OPERATION")?0:1);
-        esLog.setCreateBy(user.getId());
-        esLog.setUsername(user.getUsername());
-        HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
-        esLog.setIp(request.getRemoteAddr());
-        esLog.setRequestType(request.getMethod());
-//        esLog.setIpInfo(ipInfoUtil.getInfo(request));
-        esLog.setRequestUrl(className+"."+methodName);
-//esLog.setRequestUrl(method.type);
-        Object[] args = joinPoint.getArgs();
-        try{
-            List<String> list = new ArrayList<String>();
-            for (Object o : args) {
-                list.add(new Gson().toJson(o));
-            }
-            esLog.setRequestParam(list.toString());
-        }catch (Exception e){ }
+        if (esRecord) {
 
-        esLogService.saveLog(esLog);
+            EsLog esLog = new EsLog();
+            if (systemLog != null) {
+                //注解上的描述
+                esLog.setName(systemLog.description());
+            }
+            esLog.setCostTime(time);
+            esLog.setCreateTime(new Date());
+            esLog.setLogType(systemLog.type().toString().equals("OPERATION") ? 0 : 1);
+            esLog.setCreateBy(user.getId());
+            esLog.setUsername(user.getUsername());
+            HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
+            esLog.setIp(request.getRemoteAddr());
+            esLog.setRequestType(request.getMethod());
+//        esLog.setIpInfo(ipInfoUtil.getInfo(request));
+            esLog.setRequestUrl(className + "." + methodName);
+//esLog.setRequestUrl(method.type);
+            Object[] args = joinPoint.getArgs();
+            try {
+                List<String> list = new ArrayList<String>();
+                for (Object o : args) {
+                    list.add(new Gson().toJson(o));
+                }
+                esLog.setRequestParam(list.toString());
+            } catch (Exception e) {
+            }
+            esLogService.saveLog(esLog);
+        } else {
+            Log log = new Log();
+            if (systemLog != null) {
+                log.setName(systemLog.description());
+            }
+            log.setCostTime((int)time);
+            log.setCreateTime(new Date());
+            log.setLogType(systemLog.type().toString().equals("OPERATION") ? 0 : 1);
+            log.setCreateBy(user.getId());
+            log.setUsername(user.getUsername());
+            HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
+            log.setIp(request.getRemoteAddr());
+            log.setRequestType(request.getMethod());
+//        esLog.setIpInfo(ipInfoUtil.getInfo(request));
+            log.setRequestUrl(className + "." + methodName);
+//esLog.setRequestUrl(method.type);
+            Object[] args = joinPoint.getArgs();
+            try {
+                List<String> list = new ArrayList<String>();
+                for (Object o : args) {
+                    list.add(new Gson().toJson(o));
+                }
+                log.setRequestParam(list.toString());
+            } catch (Exception e) {
+            }
+            logService.save(log);
+        }
     }
 }
