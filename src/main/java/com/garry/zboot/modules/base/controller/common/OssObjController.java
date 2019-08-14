@@ -58,8 +58,8 @@ public class OssObjController {
     @RequestMapping(value = "/pageOssData")
     @ApiOperation(value = "分页对象")
     @SystemLog(description = "分页对象",type = LogType.OPERATION)
-    public Result<Object> pageOssData(@RequestParam(name = "dir",required = true) String dir, String nextMarker, @RequestParam(name = "maxKeys",defaultValue = "50")int maxKeys) {
-        OssPage ossObjes = OssUtil.listPage(dir, nextMarker, maxKeys);
+    public Result<Object> pageOssData(@RequestParam(name = "dir",required = true) String dir, String nextMarker, @RequestParam(name = "maxKeys",defaultValue = "50")int maxKeys,String keyPrefix) {
+        OssPage ossObjes = OssUtil.listPage(dir, nextMarker, maxKeys,keyPrefix);
         List<OssItem> ossItems = OssUtil.listAll(dir);
         Map<String,Object> map = new HashMap<>();
         map.put("summaryList",ossObjes.getSummaryList());

@@ -68,7 +68,7 @@ public class CaptchaController {
         String code = SmsServiceUtil.setCode();
         redisTemplate.opsForValue().set(mobile,code);
         try {
-            String resStr = FcySmsUtil.sendSms("【VR教育】验证码:"+code,mobile);
+            String resStr = FcySmsUtil.sendSms("【V-STU教育】验证码:"+code,mobile);
             System.out.println(resStr);
             JSONObject json = JSONObject.fromObject(resStr);
             if (!"1".equals(json.get("status")+"")){

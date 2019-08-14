@@ -166,11 +166,14 @@ public class OssUtil {
 
     // 实时的分页查询
     public static OssPage listPage(String dir, String nextMarker,
-                                   Integer maxKeys) {
+                                   Integer maxKeys,String keyPrefix) {
         OSSClient client = client();
         ListObjectsRequest listObjectsRequest = new ListObjectsRequest(ossConfigure().getBucketName());
         if (!StringUtils.isEmpty(dir)) {
             listObjectsRequest.setPrefix(dir);
+        }
+        if (!StringUtils.isEmpty(keyPrefix)) {
+            listObjectsRequest.withPrefix(keyPrefix);
         }
         if (!StringUtils.isEmpty(nextMarker)) {
             listObjectsRequest.setMarker(nextMarker);

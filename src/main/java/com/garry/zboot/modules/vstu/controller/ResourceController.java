@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.sql.Timestamp;
 import java.util.List;
 
 /**
@@ -53,14 +54,17 @@ public class ResourceController {
                                              @ModelAttribute SearchVo searchVo,
                                              @ModelAttribute Resource resource) {
 
-        IPage<Resource> data = iResourceService.selectPage(resource,pageVo,searchVo);
+        IPage<Resource> data = iResourceService.selectPage(resource, pageVo, searchVo);
         return new ResultUtil<IPage<Resource>>().setData(data);
     }
 
     @RequestMapping(value = "/saveOrUpdate", method = RequestMethod.POST)
     @ApiOperation(value = "编辑或更新数据")
     public Result<Resource> saveOrUpdate(@ModelAttribute Resource resource) {
-
+        if (resource.getCreateTime() == null) {
+            resource.setCreateTime(new Timestamp(System.currentTimeMillis()));
+            resource.setIsDelete((short) 0);
+        }
         if (iResourceService.saveOrUpdate(resource)) {
             return new ResultUtil<Resource>().setData(resource);
         }
