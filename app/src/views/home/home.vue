@@ -45,18 +45,18 @@
                     <Card>
                         <p slot="title" class="card-title">
                             <Icon type="logo-github" size="20" style="margin-bottom:3px;" />
-                            <a href="https://github.com/GaoJunzhang/z-boot.git" target="_blank">
-                                                Github开源版本地址
+                            <a href="https://github.com/GaoJunzhang/vstu-web.git" target="_blank">
+                                                项目源码地址
                                             </a>
                         </p>
                         <p slot="extra">
-                            <a target="_blank" href="http://exrick.cn">作者：Garry</a>
+                            <a target="_blank" href="#">作者：张高俊</a>
                         </p>
                         <div class="to-do-list-con">
                             <Timeline>
                                 <TimelineItem>
                                     <Icon type="logo-youtube" color="#fb7299" slot="dot"></Icon>
-                                    <a @click="showVideo=true">快闪宣传片 点我观看
+                                    <a @click="showVideo=true">宣传片 点我观看
                                                     </a>
                                 </TimelineItem>
                                 <TimelineItem>

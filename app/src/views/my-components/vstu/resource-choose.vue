@@ -1,6 +1,6 @@
 <template>
     <div>
-        <Button @click="userModalVisible=true" :icon="icon">{{text}}</Button>
+        <Button @click="resourceModalVisible=true" :icon="icon">{{text}}</Button>
         <span @click="clearSelectData" class="clear">清空已选</span>
         <Collapse simple class="collapse">
             <Panel name="1">
@@ -19,7 +19,7 @@
                 </p>
             </Panel>
         </Collapse>
-        <Drawer title="选择云盘文件" closable v-model="userModalVisible" width="800" draggable>
+        <Drawer title="选择云盘文件" closable v-model="resourceModalVisible" width="800" draggable>
             <Form
                     ref="searchResourceForm"
                     :model="searchResourceForm"
@@ -27,7 +27,7 @@
                     :label-width="65"
                     class="search-form"
             >
-                <Form-item label="文件名称" prop="fileName">
+                <!--<Form-item label="文件名称" prop="fileName">
                     <Input
                             type="text"
                             v-model="searchResourceForm.fileName"
@@ -35,7 +35,7 @@
                             placeholder="请输入文件名称"
                             style="width: 220px"
                     />
-                </Form-item>
+                </Form-item>-->
                 <Form-item label="类型" prop="department">
                     <Select
                             v-model="searchResourceForm.fileType"
@@ -43,8 +43,9 @@
                             clearable
                             style="width: 200px"
                     >
-                        <Option value="0">图片</Option>
-                        <Option value="1">应用</Option>
+                        <Option value="img/">图片</Option>
+                        <Option value="video/">视频</Option>
+                        <Option value="apk/">应用</Option>
                     </Select>
                 </Form-item>
                  <Form-item style="margin-left:-35px;" class="br">
@@ -72,7 +73,7 @@
                 已选择
                 <span class="select-count">{{selectResource.length}}</span>
                 <Button @click="clearSelectData" style="margin-left:10px">清空已选</Button>
-                <Button @click="userModalVisible=false" type="primary" style="margin-left:10px">关闭</Button>
+                <Button @click="resourceModalVisible=false" type="primary" style="margin-left:10px">关闭</Button>
             </div>
         </Drawer>
         <Modal title="查看大图" v-model="visible" class-name="fl-image-modal">
@@ -85,7 +86,6 @@
                 footer-hide
                 width="1000"
         >
-            <!--<iframe src="//player.bilibili.com/player.html?aid=30284667&cid=52827707&page=1" scrolling="no" border="0" frameborder="no" framespacing="0" allowfullscreen="true" style="width:100%;height:550px;"> </iframe>-->
             <iframe :src="videoUrl" scrolling="no" border="0" frameborder="no" framespacing="0" allowfullscreen="true"
                     style="width:100%;height:550px;"></iframe>
         </Modal>
@@ -112,13 +112,14 @@
             return {
                 height: 500,
                 ossLoading: true,
-                userModalVisible: false,
+                resourceModalVisible: false,
                 selectResource: [],
                 videoUrl: '',
                 imgUrl: '',
                 visible: false,
                 showvideo: false,
                 searchResourceForm: {
+                    fileType: '',
                     fileName: "",
                     type: "",
                     status: "",
@@ -154,9 +155,12 @@
                             } else if (".apk".indexOf(fileType) != -1) {
                                 fileTmp = global.APKIMG_URL
                                 flage = 3
+                            }else if(global.EXESTR_URL.indexOf(fileType) != -1){
+                                fileTmp = global.EXEIMG_URL
+                                flage = 4
                             } else {
                                 fileTmp = global.FILEIMG_URL
-                                flage = 4
+                                flage = 5
                             }
                             return h('img', {
                                 attrs: {
@@ -268,7 +272,14 @@
                                         },
                                         on: {
                                             click: () => {
-                                                this.chooseSelect(params.row);
+                                                let tmpKey = params.row.key
+                                                console.log(params)
+
+                                                if (tmpKey.charAt(tmpKey.length-1)=='/'){
+                                                    this.$Message.error("文件夹不可添加")
+                                                }else {
+                                                    this.chooseSelect(params.row);
+                                                }
                                             }
                                         }
                                     },
@@ -282,7 +293,6 @@
                 totalResource: 0,
                 nextMarker: '',//oss下一次分页起点
                 maxKeys: 10,//oss每页页数,
-                dir: ''//oss指定目录
             };
         },
         methods: {
@@ -296,9 +306,9 @@
                     this.showvideo = true
                 }
             },
-            handleSelectDep(v) {
+/*            handleSelectDep(v) {
                 this.searchResourceForm.departmentId = v;
-            },
+            },*/
             changeUserPage(v) {
                 this.searchResourceForm.pageNumber = v;
                 this.getOssDataList();
@@ -312,7 +322,8 @@
                 let params = {
                     nextMarker: this.nextMarker,//oss下一次分页起点
                     maxKeys: this.maxKeys,//oss每页页数
-                    dir: this.dir//oss指定目录
+                    dir: this.searchResourceForm.fileType,//oss指定目录,
+                    keyPrefix:this.searchResourceForm.fileName
                 };
                 pageOssData(params).then(res => {
                     if (res.success) {
@@ -337,28 +348,29 @@
                 // 重新加载数据
                 this.getOssDataList();
             },
-            setData(v) {
+/*            setData(v) {
                 this.selectResource = v;
                 this.$emit("on-change", this.selectResource);
-            },
+            },*/
             chooseSelect(v) {
+                console.log(v)
                 // 去重
                 let that = this;
                 let flag = true;
                 this.selectResource.forEach(e => {
-                    if (v.id == e.id) {
+                    if (v._index == e.id) {
                         that.$Message.warning("已经添加过啦，请勿重复选择");
                         flag = false;
                     }
                 });
                 if (flag) {
                     let u = {
-                        id: v.id,
-                        fileName: v.fileName
+                        id: v._index,
+                        fileName: global.OSS_URL+v.key
                     };
                     this.selectResource.push(u);
                     this.$emit("on-change", this.selectResource);
-                    this.$Message.success(`添加资源 ${v.fileName} 成功`);
+                    this.$Message.success(`添加成功`);
                 }
             },
             clearSelectData() {

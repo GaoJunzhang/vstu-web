@@ -97,6 +97,19 @@
                 ></Page>
             </Row>
         </Card>
+        <Modal title="查看大图" v-model="visible" class-name="fl-image-modal">
+            <img :src="imgUrl" v-if="visible" style="width: 100%">
+        </Modal>
+        <Modal
+                v-model="showvideo"
+                title="预览视频"
+                :styles="{top: '30px'}"
+                footer-hide
+                width="1000"
+        >
+            <iframe :src="videoUrl" scrolling="no" border="0" frameborder="no" framespacing="0" allowfullscreen="true"
+                    style="width:100%;height:550px;"></iframe>
+        </Modal>
     </div>
 </template>
 
@@ -107,8 +120,10 @@
         delResourceIds,
         addresource
     } from "@/api/index"
+    import '@/locale/global'
     import add from "./add.vue";
     import edit from "./edit.vue";
+
     export default {
         name: "single-window",
         components: {
@@ -121,6 +136,10 @@
                 dropDownIcon: "ios-arrow-down",
                 selectDate: null,
                 drop: false,
+                imgUrl: '',
+                visible: false,
+                showvideo: false,
+                videoUrl: '',
                 searchForm: {
                     name: "",
                     title: "",
@@ -132,7 +151,6 @@
                     startDate: "",
                     endDate: ""
                 },
-
 
 
                 id: "",
@@ -159,24 +177,70 @@
                         title: "资源名称",
                         key: "name",
                         sortable: true
-                    }, {
-                        title: "地址",
-                        key: "url",
+                    },
+                    {
+                        title: "标题",
+                        key: "title",
                         sortable: true
                     },
                     {
                         title: "预览图",
                         key: "proImg",
-                        sortable: true
+                        sortable: true,
+                        render: (h, params) => {
+                            console.log("===============")
+                            console.log(params)
+                            return h('img', {
+                                attrs: {
+                                    src: params.row.proImg,
+                                    onerror: 'this.src="' + global.ERRORIMG_URL + '"'
+                                },
+                                on: {
+                                    click: () => {
+                                        this.previewFile(1, params.row.proImg)
+
+                                    }
+                                },
+                                style: {
+                                    'margin-top': '10px',
+                                    'margin-bottom': '10px',
+                                    'border-radius': '4px',
+                                    width: '80px',
+                                    height: '80px',
+                                    cursor: 'pointer'
+                                }
+                            });
+                        }
                     },
                     {
                         title: "预览视频",
                         key: "proVideo",
-                        sortable: true
-                    },
-                    {
-                        title: "标题",
-                        key: "title",
+                        sortable: true,
+                        render: (h, params) => {
+                            return h('img', {
+                                attrs: {
+                                    src: global.VIDEOIMG_URL,
+                                    onerror: 'this.src="' + global.ERRORIMG_URL + '"'
+                                },
+                                on: {
+                                    click: () => {
+                                        this.previewFile(2, params.row.proVideo)
+
+                                    }
+                                },
+                                style: {
+                                    'margin-top': '10px',
+                                    'margin-bottom': '10px',
+                                    'border-radius': '4px',
+                                    width: '80px',
+                                    height: '80px',
+                                    cursor: 'pointer'
+                                }
+                            });
+                        }
+                    }, {
+                        title: "地址",
+                        key: "url",
                         sortable: true
                     },
                     {
@@ -242,6 +306,16 @@
             };
         },
         methods: {
+            previewFile(flage, url) {
+                if (flage == 1) {
+                    this.imgUrl = url
+                    this.visible = true
+                }
+                if (flage == 2) {
+                    this.videoUrl = url
+                    this.showvideo = true
+                }
+            },
             init() {
                 this.getDataList();
             },
@@ -298,10 +372,10 @@
                     content: "您确认要删除 " + v.name + " ?",
                     onOk: () => {
                         delResourceIds(v.id).then(res => {
-                            if (res.success == true){
+                            if (res.success == true) {
                                 this.$Message.success("操作成功");
                                 this.getDataList();
-                            }else {
+                            } else {
                                 this.$Message.error("操作失败")
                             }
                         })
@@ -330,11 +404,11 @@
                         });
                         ids = ids.substring(0, ids.length - 1);
                         delResourceIds(ids).then(res => {
-                            if (res.success == true){
+                            if (res.success == true) {
                                 this.$Message.success("操作成功");
                                 this.clearSelectAll();
                                 this.getDataList();
-                            }else {
+                            } else {
                                 this.$Message.error("操作失败")
                             }
                         })

@@ -181,10 +181,9 @@
                         this.sended = true;
                         this.countDown();
                         sendSms(this.form.mobile).then(res => {
+                            console.log(res)
                             if (res.success == true) {
                                 this.showMsmmessage("已发送")
-                            }else {
-                                this.showErrorMsg("系统异常请稍后再试，或者使用账号密码登录")
                             }
                         })
                     }
