@@ -66,7 +66,7 @@
                 </Row>
                  <Row type="flex" justify="space-between" class="code-row-bg other-login">
                    <div class="other-way icons">
-                     其它方式登录
+                     <!--其它方式登录
                      <div class="other-icon" @click="toGithubLogin">
                        <icon scale="1.1" name="brands/github"></icon>
                      </div>
@@ -78,7 +78,7 @@
                      </div>
                      <div class="other-icon" @click="toWeixinLogin">
                        <icon scale="1.2" name="brands/weixin"></icon>
-                     </div>
+                     </div>-->
                    </div>
                    <router-link to="/regist"><a class="forget-pass">注册账户</a></router-link>
                  </Row>

@@ -102,7 +102,7 @@
           </div>
 
           <div v-show="currName=='2-1'||currName=='2-2'||currName=='2-3'">
-            <div class="sorry">
+            <!--<div class="sorry">
               <img src="@/assets/sorry.png">
               <span class="text">抱歉，请获取完整版</span>
               <Button
@@ -111,7 +111,7 @@
                 type="error"
                 icon="md-paper-plane"
               >立即获取</Button>
-            </div>
+            </div>-->
           </div>
         </Content>
       </Layout>
