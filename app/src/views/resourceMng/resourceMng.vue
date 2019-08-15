@@ -188,8 +188,6 @@
                         key: "proImg",
                         sortable: true,
                         render: (h, params) => {
-                            console.log("===============")
-                            console.log(params)
                             return h('img', {
                                 attrs: {
                                     src: params.row.proImg,

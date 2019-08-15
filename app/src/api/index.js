@@ -442,6 +442,21 @@ export const addresource = (params) => {
 export const delResourceIds = (id) => {
     return deleteRequest(`/resource/delByIds/${id}`);
 }
+/**
+ * userResource
+ */
+export const uResourceData = (params) => {
+    return getRequest('/userResource/getByPage', params)
+}
+export const addUResource = (params) => {
+    return postRequest('/userResource/saveOrUpdate', params);
+}
+export const uResourceById = (id) => {
+    return getRequest(`/userResource/get/${id}`)
+}
+export const delUResourceIds = (id) => {
+    return deleteRequest(`/userResource/delByIds/${id}`);
+}
 
 // base64上传
 export const base64Upload = (params) => {

@@ -14,7 +14,7 @@
                             color="default"
                             closable
                             @on-close="handleCancelUser"
-                    >{{item.fileName}}
+                    >{{item.name}}
                     </Tag>
                 </p>
             </Panel>
@@ -154,8 +154,6 @@
                         width: 130,
                         sortable: true,
                         render: (h, params) => {
-                            console.log("===============")
-                            console.log(params)
                             return h('img', {
                                 attrs: {
                                     src: params.row.proImg,
@@ -230,8 +228,6 @@
                                         },
                                         on: {
                                             click: () => {
-                                                let tmpKey = params.row.id
-                                                console.log(params)
                                                 this.chooseSelect(params.row);
                                             }
                                         }
@@ -297,7 +293,6 @@
                             this.$emit("on-change", this.selectResource);
                         },*/
             chooseSelect(v) {
-                console.log(v)
                 // 去重
                 let that = this;
                 let flag = true;
@@ -308,11 +303,7 @@
                     }
                 });
                 if (flag) {
-                    let u = {
-                        id: v.id,
-                        fileName: v.name
-                    };
-                    this.selectResource.push(u);
+                    this.selectResource.push(v);
                     this.$emit("on-change", this.selectResource);
                     this.$Message.success(`添加成功`);
                 }
