@@ -1,5 +1,6 @@
 package com.garry.zboot.modules.vstu.service.impl;
 
+import com.garry.zboot.modules.vstu.bean.UserResourceBean;
 import com.garry.zboot.modules.vstu.dao.mapper.UserResourceMapper;
 import com.garry.zboot.modules.vstu.entity.UserResource;
 import com.garry.zboot.modules.vstu.service.IUserResourceService;
@@ -23,4 +24,12 @@ public class IUserResourceServiceImpl extends ServiceImpl<UserResourceMapper, Us
 
     @Autowired
     private UserResourceMapper userResourceMapper;
+
+    public int batchSave(List<UserResource> list){
+        return userResourceMapper.batchSave(list);
+    }
+
+    public List<UserResourceBean> userResourceByUid(String uid){
+        return userResourceMapper.userResourceByUid(uid);
+    }
 }

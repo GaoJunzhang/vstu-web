@@ -1,5 +1,40 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.garry.zboot.modules.vstu.dao.mapper.UserResourceMapper">
+    <resultMap id="BaseResultMap" type="com.garry.zboot.modules.vstu.entity.UserResource">
+        <result column="id" jdbcType="VARCHAR" property="id"/>
+        <result column="t_user_id" jdbcType="VARCHAR" property="userId"/>
+        <result column="resource_id" jdbcType="VARCHAR" property="resourceId"/>
+        <result column="start_time" jdbcType="TIMESTAMP" property="startTime"/>
+        <result column="end_time" jdbcType="INTEGER" property="endTime"/>
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+        <result column="is_forever" jdbcType="SMALLINT" property="isForever"/>
+    </resultMap>
+    <resultMap id="userResourceResultMap" type="com.garry.zboot.modules.vstu.bean.UserResourceBean">
+        <result column="id" jdbcType="VARCHAR" property="id"/>
+        <result column="t_user_id" jdbcType="VARCHAR" property="userId"/>
+        <result column="resource_id" jdbcType="VARCHAR" property="resourceId"/>
+        <result column="start_time" jdbcType="TIMESTAMP" property="startTime"/>
+        <result column="end_time" jdbcType="INTEGER" property="endTime"/>
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+        <result column="is_forever" jdbcType="SMALLINT" property="isForever"/>
 
+        <result column="name" jdbcType="VARCHAR" property="name"/>
+        <result column="url" jdbcType="VARCHAR" property="url"/>
+        <result column="pro_img" jdbcType="VARCHAR" property="proImg"/>
+        <result column="pro_video" jdbcType="VARCHAR" property="proVideo"/>
+        <result column="content" jdbcType="VARCHAR" property="content"/>
+        <result column="is_delete" jdbcType="VARCHAR" property="isDelete"/>
+    </resultMap>
+    <insert id="batchSave" parameterType="java.util.List" useGeneratedKeys="false">
+        <foreach collection="list" item="item" index="index" open="" close="" separator=";">
+            insert into user_resource(id,start_time,end_time,t_user_id,resource_id,create_time,is_forever) values
+            (#{item.id},#{item.startTime},#{item.endTime},#{item.userId},#{item.resourceId},#{item.createTime},#{item.isForever})
+        </foreach>
+    </insert>
+    <select id="userResourceByUid" parameterType="java.lang.String" resultMap="userResourceResultMap">
+        SELECT
+        t.id,t.is_forever,t.start_time,t.end_time,r.name,r.url,r.pro_img,r.pro_video,r.content,r.is_delete
+        from user_resource t,resource r where t.resource_id=r.id and t.t_user_id=#{uid}
+    </select>
 </mapper>
