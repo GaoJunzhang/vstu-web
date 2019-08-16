@@ -6,7 +6,7 @@ import com.garry.zboot.common.vo.Result;
 /**
 * class_name: ResultUtil
 * package: com.garry.zboot.common.utils
-* describe: TODO
+* describe:
 * creat_user: ZhangGaoJun@zhanggj@seeyoo.cn
 * creat_date: 2019/7/9
 * creat_time: 9:01

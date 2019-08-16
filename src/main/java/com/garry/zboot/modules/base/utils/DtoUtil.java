@@ -7,7 +7,7 @@ import com.garry.zboot.modules.base.vo.MenuVo;
 /**
 * class_name: DtoUtil
 * package: com.garry.zboot.modules.base.utils
-* describe: TODO
+* describe:
 * creat_user: ZhangGaoJun@zhanggj@seeyoo.cn
 * creat_date: 2019/7/9
 * creat_time: 9:47

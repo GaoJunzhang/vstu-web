@@ -33,7 +33,7 @@ import java.util.concurrent.TimeUnit;
 /**
 * class_name: JWTAuthenticationFilter
 * package: com.garry.zboot.config.security.jwt
-* describe: TODO
+* describe: jwt过滤器
 * creat_user: ZhangGaoJun@zhanggj@seeyoo.cn
 * creat_date: 2019/7/9
 * creat_time: 13:52

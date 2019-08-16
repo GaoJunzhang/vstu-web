@@ -14,7 +14,7 @@ import java.util.UUID;
 /**
 * class_name: RedisRaterLimiter
 * package: com.garry.zboot.common.limit
-* describe: TODO
+* describe:
 * creat_user: ZhangGaoJun@zhanggj@seeyoo.cn
 * creat_date: 2019/7/9
 * creat_time: 13:26

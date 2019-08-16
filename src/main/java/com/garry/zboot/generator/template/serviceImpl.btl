@@ -46,7 +46,7 @@ public class ${entity.className}ServiceImpl implements ${entity.className}Servic
             @Override
             public Predicate toPredicate(Root<${entity.className}> root, CriteriaQuery<?> cq, CriteriaBuilder cb) {
 
-                // TODO 可添加你的其他搜索过滤条件 默认已有创建时间过滤
+                // 可添加你的其他搜索过滤条件 默认已有创建时间过滤
                 Path<Date> createTimeField=root.get("createTime");
 
                 List<Predicate> list = new ArrayList<Predicate>();
